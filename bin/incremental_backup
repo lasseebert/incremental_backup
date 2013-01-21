@@ -1,5 +1,0 @@
-#!/usr/bin/env ruby
-
-require 'incremental_backup'
-
-puts 'Hello world'
