@@ -1,3 +1,5 @@
+require 'logger'
+
 module IncrementalBackup
   class Task
 
