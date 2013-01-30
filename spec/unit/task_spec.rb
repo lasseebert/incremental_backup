@@ -7,6 +7,9 @@ describe IncrementalBackup::Task do
       config.daily_backups = 7
       config.weekly_backups = 4
       config.montly_backups = 3
+
+      #config.settings_path = File.dirname(__FILE__)
+
     end
     task.settings.hourly_backups.should == 24
     task.settings.daily_backups.should == 7
