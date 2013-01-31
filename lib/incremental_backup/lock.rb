@@ -20,13 +20,23 @@ module IncrementalBackup
 
     # Obtains lock, run block, release lock
     def self.create task, &block
+      task.logger.info 'Obtaining lock...'
+
       lock = Lock.new task
-      return false if lock.failed
+
+      if lock.failed
+        task.logger.info 'Lock can not be obtained. Exiting!'
+        return
+      end
+
+      task.logger.info 'Obtained lock'
 
       begin
         yield
       ensure
+        task.logger.info 'Releasing lock...'
         lock.release
+        task.logger.info 'Released lock'
       end
 
       true
