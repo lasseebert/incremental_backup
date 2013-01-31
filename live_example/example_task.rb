@@ -4,6 +4,11 @@ require 'incremental_backup'
 
 task = IncrementalBackup::Task.new do |settings|
 
+  # Defines the id of the task. This is used to ensure that the backup cannot
+  # be running simultaneously in two processes. The name must be a valid file
+  # name
+  settings.task_id = 'my_backup_task'
+
   # Defines the maximum number of hourly backups
   settings.hourly_backups = 24
 

@@ -16,6 +16,12 @@ module IncrementalBackup
     # Perform the backup
     def run
       validate_settings
+
+      Lock.create(self) do
+        puts 'Inside lock 1'
+        sleep 3
+        puts 'Inside lock 2'
+      end
     end
 
     private
