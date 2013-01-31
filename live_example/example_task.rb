@@ -3,9 +3,25 @@
 require 'incremental_backup'
 
 task = IncrementalBackup::Task.new do |settings|
+
+  # Defines the maximum number of hourly backups
   settings.hourly_backups = 24
+
+  # The maximum number of daily backups
   settings.daily_backups = 7
+
+  # The maximum number of weekly backups
   settings.weekly_backups = 4
+
+  # The maximum number of monthly backups
   settings.montly_backups = 3
+
+  # This is where all helper files are saved. These include a log file, a lock
+  # file and a file remembering the dates of the the last backups. This would
+  # typically be a hidden directory in the home folder, e.g. ~/.incremental_backup
   settings.settings_path = File.dirname(__FILE__)
+
+
 end
+
+task.run
