@@ -1,4 +1,4 @@
 source 'https://rubygems.org'
 
-gem 'incremental_backup'
+gem 'incremental_backup', '~> 0.0'
 

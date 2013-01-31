@@ -28,7 +28,7 @@ The recommended usage is to create a small ruby application with a gemfile. Take
 ```ruby
 source 'https://rubygems.org'
 
-gem 'incremental_backup'
+gem 'incremental_backup', '~> 0.0'
 ```
 
 And `my\_backup.rb` should look something like this: (Early version, this might change)
