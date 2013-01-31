@@ -51,7 +51,7 @@ task.run
 ## Cron
 It's recommended to setup a cron job to handle scheduling of the backup.
 
-The cron job can be triggered as often as you would like to, the script still only performs one backup per hour. This is useful if your computer is usually not online for more than an hour.
+The cron job can be triggered as often as you would like to, the script still only at most perform one backup per hour. This is useful if your computer is usually not online for more than an hour.
 
 ## Details an gotchas
 Todo
