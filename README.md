@@ -31,7 +31,7 @@ source 'https://rubygems.org'
 gem 'incremental_backup', '~> 0.0'
 ```
 
-And `my\_backup.rb` should look something like this: (Early version, this might change)
+And `my_backup.rb` should look something like this: (Early version, this might change)
 ```ruby
 #!/usr/bin/env ruby
 
