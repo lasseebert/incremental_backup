@@ -10,10 +10,9 @@ Gem::Specification.new do |gem|
   gem.email         = ["lasseebert@gmail.com"]
   gem.description   = %q{(NOT YET WORKING...) incremental_backup can make incremental backups by hour/day/week/month remotely through ssh and rsync}
   gem.summary       = %q{(NOT YET WORKING...) incremental_backup can make incremental backups by hour/day/week/month remotely through ssh and rsync}
-  gem.homepage      = ""
+  gem.homepage      = 'https://github.com/lasseebert/incremental_backup'
 
   gem.files         = `git ls-files`.split($/)
-  gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
 
