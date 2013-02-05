@@ -47,11 +47,9 @@ module IncrementalBackup
         rsync_path = "#{login}:#{progress_path}"
 
         # Make schedule folder
-        #`ssh -i #{settings.ssh_key_path} #{login} "[ -d #{complete_path} ] || mkdir -p #{complete_path}"`
         `ssh #{login} "[ -d #{schedule_path} ] || mkdir -p #{schedule_path}"`
 
         # Rsync
-        #`rsync #{rsync_options} -e "ssh -i #{settings.ssh_key_path}" --link-dest=#{current_path} #{settings.local_path} #{rsync_path}`
         `rsync #{rsync_options} -e "ssh" --link-dest=#{current_path} #{settings.local_path} #{rsync_path}`
 
         # shuffle backups around

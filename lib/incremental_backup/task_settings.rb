@@ -25,7 +25,6 @@ module IncrementalBackup
     # Login
     attribute :remote_server
     attribute :remote_user
-    attribute :ssh_key_path
 
     # Validation
     validates :task_id, presence: true
@@ -34,7 +33,6 @@ module IncrementalBackup
     validates :local_path, presence: true
     validates :remote_path, presence: true
     validates :remote_user, presence: true
-    validates :ssh_key_path, presence: true
 
   end
 end

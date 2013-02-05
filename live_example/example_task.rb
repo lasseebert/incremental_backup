@@ -29,7 +29,6 @@ task = IncrementalBackup::Task.new do |settings|
   # Login options
   settings.remote_server = 'raspi'
   settings.remote_user = 'pulver'
-  settings.ssh_key_path = '~/.ssh/id_rsa'
 
   # Paths
   settings.local_path = '~/Dropbox'
