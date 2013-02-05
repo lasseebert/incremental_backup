@@ -19,4 +19,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rspec', '~> 2.12'
   gem.add_development_dependency 'guard-rspec', '~> 2.4'
   gem.add_development_dependency 'rb-inotify', '~> 0.8.8'
+
+  gem.add_dependency 'active_attr', '~> 0.7'
 end

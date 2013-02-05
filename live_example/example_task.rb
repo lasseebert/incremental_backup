@@ -27,6 +27,7 @@ task = IncrementalBackup::Task.new do |settings|
   settings.settings_path = File.dirname(__FILE__)
 
 
+  settings.remote_server = 'raspi'
 end
 
 task.run

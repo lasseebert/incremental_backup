@@ -22,10 +22,12 @@ module IncrementalBackup
       # Run everything inside a lock, ensuring that only one instance of this
       # task is running.
       Lock.create(self) do
-        puts 'Inside lock 1'
-        sleep 3
-        puts 'Inside lock 2'
+        schedule = find_schedule
+        logger.info "Starting #{schedule} backup to #{settings.remote_server}"
       end
+    rescue Exception => exception
+      puts "Error:"
+      puts exception.message
     end
 
     def logger
@@ -35,8 +37,19 @@ module IncrementalBackup
     private
 
     def validate_settings
-      throw settings.errors.first unless settings.valid?
+      unless settings.valid?
+        logger.error "Invalid settings:"
+        settings.errors.full_messages.each do |message|
+          logger.error message
+        end
+        throw "Invalid settings. Check the log file"
+      end
       logger.info "Settings validated"
+    end
+
+    # Find out which schedule to run
+    def find_schedule
+      :hourly
     end
   end
 end

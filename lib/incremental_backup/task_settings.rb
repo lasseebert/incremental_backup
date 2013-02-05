@@ -1,25 +1,28 @@
+require 'active_attr'
 module IncrementalBackup
   class TaskSettings
-    attr_accessor :hourly_backups,
-      :daily_backups,
-      :weekly_backups,
-      :montly_backups,
+    include ActiveAttr::Model
 
-      # Unique task id, must be a valid file name
-      :task_id,
+    # Max backups to keep
+    attribute :hourly_backups, default: 24
+    attribute :daily_backups, default: 7
+    attribute :weekly_backups, default: 4
+    attribute :montly_backups, default: 3
 
-      # Path to store log file, lock file and more
-      :settings_path
+    # Unique task id, must be a valid file name
+    attribute :task_id
 
-    def valid?
-      errors << 'settings_path is missing' if settings_path.nil?
-      errors << 'task_id is missing' if task_id.nil?
-      errors.empty?
-    end
+    # Path to store log file, lock file and more
+    attribute :settings_path
 
-    def errors
-      @errors ||= []
-    end
+    # Remote server
+    attribute :remote_server
+
+
+    # Validation
+    validates :task_id, presence: true
+    validates :settings_path, presence: true
+    validates :remote_server, presence: true
 
   end
 end
