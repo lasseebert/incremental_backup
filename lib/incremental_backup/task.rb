@@ -24,7 +24,28 @@ module IncrementalBackup
       Lock.create(self) do
         schedule = find_schedule
         logger.info "Starting #{schedule} backup to #{settings.remote_server}"
+
+        # Options for rsync
+        rsync_options = {
+          "-azprvP" => nil,
+          "--delete" => nil,
+          "--delete-excluded" => nil,
+          "--modify-window" => '2',
+          "--force" => nil,
+          "--ignore-errors" => nil,
+          "--stats" => nil
+        }
+        rsync_options["--exclude-from"] = settings.exclude_file if settings.exclude_file
+
+        timestamp = Time.now.strftime('backup_%Y-%m-%d-T%H-%M-%S')
+        current_path = File.join(settings.remote_path, 'current')
+        progress_path = File.join(settings.remote_path, 'incomplete')
+        complete_path = File.join(settings.remote_path, schedule.to_s, timestamp)
+        login = "#{settings.remote_user}@#{settings.remote_server}"
+        rsync_path = "#{login}:#{progress_path}"
+
       end
+
     rescue Exception => exception
       puts "Error:"
       puts exception.message
