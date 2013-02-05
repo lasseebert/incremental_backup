@@ -26,8 +26,14 @@ task = IncrementalBackup::Task.new do |settings|
   # typically be a hidden directory in the home folder, e.g. ~/.incremental_backup
   settings.settings_path = File.dirname(__FILE__)
 
-
+  # Login options
   settings.remote_server = 'raspi'
+  settings.remote_user = 'pulver'
+  settings.ssh_key_path = '~/.ssh/id_rsa'
+
+  # Paths
+  settings.local_path = '~'
+  settings.remote_path = '~/backup/incremental'
 end
 
 task.run
