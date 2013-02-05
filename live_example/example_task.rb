@@ -32,7 +32,7 @@ task = IncrementalBackup::Task.new do |settings|
   settings.ssh_key_path = '~/.ssh/id_rsa'
 
   # Paths
-  settings.local_path = '~'
+  settings.local_path = '~/Dropbox'
   settings.remote_path = '~/backup/incremental'
 end
 

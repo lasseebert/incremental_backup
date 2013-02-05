@@ -36,6 +36,7 @@ module IncrementalBackup
           "--stats" => nil
         }
         rsync_options["--exclude-from"] = settings.exclude_file if settings.exclude_file
+        rsync_options = "-azprvP --delete --delete-excluded --modify-window=2 --force --ignore-errors --stats"
 
         timestamp = Time.now.strftime('backup_%Y-%m-%d-T%H-%M-%S')
         current_path = File.join(settings.remote_path, 'current')
@@ -44,6 +45,12 @@ module IncrementalBackup
         login = "#{settings.remote_user}@#{settings.remote_server}"
         rsync_path = "#{login}:#{progress_path}"
 
+        # Make complete folder
+        `ssh -i #{settings.ssh_key_path} #{login} "[ -d #{complete_path} ] || mkdir -p #{complete_path}"`
+
+        # Rsync
+        #`rsync #{rsync_options} -e "ssh -i #{settings.ssh_key_path}" --link-dest=#{current_path} #{settings.local_path} #{rsync_path}`
+        `rsync #{rsync_options} -e "ssh" --link-dest=#{current_path} #{settings.local_path} #{rsync_path}`
       end
 
     rescue Exception => exception
