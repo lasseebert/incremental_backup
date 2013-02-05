@@ -41,16 +41,24 @@ module IncrementalBackup
         timestamp = Time.now.strftime('backup_%Y-%m-%d-T%H-%M-%S')
         current_path = File.join(settings.remote_path, 'current')
         progress_path = File.join(settings.remote_path, 'incomplete')
-        complete_path = File.join(settings.remote_path, schedule.to_s, timestamp)
+        schedule_path = File.join(settings.remote_path, schedule.to_s)
+        complete_path = File.join(schedule_path, timestamp)
         login = "#{settings.remote_user}@#{settings.remote_server}"
         rsync_path = "#{login}:#{progress_path}"
 
-        # Make complete folder
-        `ssh -i #{settings.ssh_key_path} #{login} "[ -d #{complete_path} ] || mkdir -p #{complete_path}"`
+        # Make schedule folder
+        #`ssh -i #{settings.ssh_key_path} #{login} "[ -d #{complete_path} ] || mkdir -p #{complete_path}"`
+        `ssh #{login} "[ -d #{schedule_path} ] || mkdir -p #{schedule_path}"`
 
         # Rsync
         #`rsync #{rsync_options} -e "ssh -i #{settings.ssh_key_path}" --link-dest=#{current_path} #{settings.local_path} #{rsync_path}`
         `rsync #{rsync_options} -e "ssh" --link-dest=#{current_path} #{settings.local_path} #{rsync_path}`
+
+        # shuffle backups around
+        `ssh #{login} mv #{progress_path} #{complete_path}`
+        `ssh #{login} rm -f #{current_path}`
+        `ssh #{login} ln -s #{complete_path} #{current_path}`
+
       end
 
     rescue Exception => exception
