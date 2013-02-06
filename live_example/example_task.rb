@@ -31,8 +31,11 @@ task = IncrementalBackup::Task.new do |settings|
   settings.remote_user = 'pulver'
 
   # Paths
-  settings.local_path = '~/Dropbox'
+  settings.local_path = '~'
   settings.remote_path = '~/backup/incremental'
+
+  # Exclude all the files and folder listed in this file
+  settings.exclude_file = File.join File.dirname(__FILE__), 'exclude.file'
 end
 
 task.run

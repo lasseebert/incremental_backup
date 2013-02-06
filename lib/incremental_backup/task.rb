@@ -27,6 +27,7 @@ module IncrementalBackup
         logger.info "Starting #{schedule} backup to #{settings.remote_server}"
 
         # Options for rsync
+        # TODO: Only use long options
         rsync_options = {
           "-azprvP" => nil,
           "--delete" => nil,
@@ -37,7 +38,7 @@ module IncrementalBackup
           "--stats" => nil
         }
         rsync_options["--exclude-from"] = settings.exclude_file if settings.exclude_file
-        rsync_options = "-azprvP --delete --delete-excluded --modify-window=2 --force --ignore-errors --stats"
+        rsync_options = rsync_options.map{|key, value| "#{key}#{value ? "=#{value}" : ''}" }.join(' ')
 
         timestamp = Time.now.strftime('backup_%Y-%m-%d-T%H-%M-%S')
         current_path = File.join(settings.remote_path, 'current')
@@ -47,7 +48,7 @@ module IncrementalBackup
         login = "#{settings.remote_user}@#{settings.remote_server}"
         rsync_path = "#{login}:#{progress_path}"
 
-        # Todo: Use https://github.com/net-ssh/net-ssh
+        # TODO: Use https://github.com/net-ssh/net-ssh
         # Make schedule folder
         execute "ssh #{login} \"[ -d #{schedule_path} ] || mkdir -p #{schedule_path}\""
 

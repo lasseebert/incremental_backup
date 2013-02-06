@@ -1,0 +1,43 @@
+.cache/
+.config/google-chrome/
+.config/spotify/
+.config/sublime-text-2/Pristine Packages
+.config/sublime-text-2/Settings/Auto Save Session.sublime_session
+.dropbox/
+.dropbox-dist/
+.fluxbox/fbrun_history
+.getmail/getmail.gmail
+.inc_backup/daily
+.inc_backup/hourly
+.inc_backup/log
+.inc_backup/lock
+.inc_backup/monthly
+.inc_backup/weekly
+.local/
+.mozilla/firefox/
+.nv/GLCache/
+.npm/
+.pulse/
+.purple/
+.rbenv/
+.rvm/
+.s3_backup/lock
+.s3_backup/log
+.thumbnails/
+.xbmc/
+.xsession-errors*
+.zsh_history
+danid.log
+backup/
+Calibre Library/
+Downloads/
+Dropbox/
+images/bryllup
+images_s3/
+
+tmp
+cache
+development.log
+development.sqlite3
+test.log
+
