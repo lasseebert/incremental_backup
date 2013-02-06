@@ -47,6 +47,7 @@ module IncrementalBackup
         login = "#{settings.remote_user}@#{settings.remote_server}"
         rsync_path = "#{login}:#{progress_path}"
 
+        # Todo: Use https://github.com/net-ssh/net-ssh
         # Make schedule folder
         execute "ssh #{login} \"[ -d #{schedule_path} ] || mkdir -p #{schedule_path}\""
 
@@ -54,19 +55,21 @@ module IncrementalBackup
         execute "rsync #{rsync_options} -e \"ssh\" --link-dest=#{current_path} #{settings.local_path} #{rsync_path}"
 
         # shuffle backups around
-        execute "ssh #{login} mv #{progress_path} #{complete_path}"
-        execute "ssh #{login} rm -f #{current_path}"
-        execute "ssh #{login} ln -s #{complete_path} #{current_path}"
+        execute "ssh #{login} mv --verbose            #{progress_path} #{complete_path}"
+        execute "ssh #{login} rm --verbose --force    #{current_path}"
+        execute "ssh #{login} ln --verbose --symbolic #{complete_path} #{current_path}"
 
         # Delete old backups
         ctime = 1
         execute "ssh #{login} \"find #{schedule_path} -maxdepth 1 -mindepth 1 -ctime #{ctime} -exec rm -fR {} \\;\""
 
+        logger.info 'Backup done'
       end
 
+
     rescue Exception => exception
-      puts "Error:"
-      puts exception.message
+      logger.error 'Error:'
+      logger.error exception.message
     end
 
     def logger
