@@ -1,4 +1,5 @@
 require 'logger'
+require 'open3'
 
 module IncrementalBackup
   class Task
@@ -47,15 +48,19 @@ module IncrementalBackup
         rsync_path = "#{login}:#{progress_path}"
 
         # Make schedule folder
-        `ssh #{login} "[ -d #{schedule_path} ] || mkdir -p #{schedule_path}"`
+        execute "ssh #{login} \"[ -d #{schedule_path} ] || mkdir -p #{schedule_path}\""
 
         # Rsync
-        `rsync #{rsync_options} -e "ssh" --link-dest=#{current_path} #{settings.local_path} #{rsync_path}`
+        execute "rsync #{rsync_options} -e \"ssh\" --link-dest=#{current_path} #{settings.local_path} #{rsync_path}"
 
         # shuffle backups around
-        `ssh #{login} mv #{progress_path} #{complete_path}`
-        `ssh #{login} rm -f #{current_path}`
-        `ssh #{login} ln -s #{complete_path} #{current_path}`
+        execute "ssh #{login} mv #{progress_path} #{complete_path}"
+        execute "ssh #{login} rm -f #{current_path}"
+        execute "ssh #{login} ln -s #{complete_path} #{current_path}"
+
+        # Delete old backups
+        ctime = 1
+        execute "ssh #{login} \"find #{schedule_path} -maxdepth 1 -mindepth 1 -ctime #{ctime} -exec rm -fR {} \\;\""
 
       end
 
@@ -79,6 +84,16 @@ module IncrementalBackup
         throw "Invalid settings. Check the log file"
       end
       logger.info "Settings validated"
+    end
+
+    # Runs a shell command
+    def execute(command)
+      Open3::popen3(command) { |stdin, stdout, stderr|
+        tmp_stdout = stdout.read.strip
+        tmp_stderr = stderr.read.strip
+        logger.info("#{command}\n#{tmp_stdout}") unless tmp_stdout.empty?
+        logger.error("#{command}\n#{tmp_stderr}") unless tmp_stderr.empty?
+      }
     end
 
     # Find out which schedule to run
