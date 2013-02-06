@@ -1,5 +1,6 @@
 require 'logger'
 require 'open3'
+require 'net/ssh'
 
 module IncrementalBackup
   class Task
@@ -107,10 +108,14 @@ module IncrementalBackup
 
     # Runs one ore more commands remotely via ssh
     def execute_ssh(commands)
-      login = "#{settings.remote_user}@#{settings.remote_server}"
       commands = [commands] unless commands.is_a? Array
-      commands.each do |command|
-        execute "ssh #{login} \"#{command}\""
+      Net::SSH.start settings.remote_server, settings.remote_user do |ssh|
+        commands.each do |command|
+          ssh.exec! command do |channel, stream, data|
+            logger.info data if stream == :stdout
+            logger.error data if stream == :stderr
+          end
+        end
       end
     end
 

@@ -21,4 +21,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rb-inotify', '~> 0.8.8'
 
   gem.add_dependency 'active_attr', '~> 0.7'
+  gem.add_dependency 'net-ssh', '~> 2.6'
 end
