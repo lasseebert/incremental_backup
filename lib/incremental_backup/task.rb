@@ -52,7 +52,6 @@ module IncrementalBackup
         login = "#{settings.remote_user}@#{settings.remote_server}"
         rsync_path = "#{login}:#{progress_path}"
 
-        # TODO: Use https://github.com/net-ssh/net-ssh
         # Make schedule folder
         execute_ssh "mkdir --verbose --parents #{schedule_path}"
 
