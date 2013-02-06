@@ -1,5 +1,4 @@
 require 'logger'
-require 'open3'
 require 'net/ssh'
 
 module IncrementalBackup
@@ -29,20 +28,6 @@ module IncrementalBackup
         schedule = find_schedule
         logger.info "Starting #{schedule} backup to #{settings.remote_server}"
 
-        # Options for rsync
-        # TODO: Only use long options
-        rsync_options = {
-          "-azprvP" => nil,
-          "--delete" => nil,
-          "--delete-excluded" => nil,
-          "--modify-window" => '2',
-          "--force" => nil,
-          "--ignore-errors" => nil,
-          "--stats" => nil
-        }
-        rsync_options["--exclude-from"] = settings.exclude_file if settings.exclude_file
-        rsync_options = rsync_options.map{|key, value| "#{key}#{value ? "=#{value}" : ''}" }.join(' ')
-
         # Paths and other options
         timestamp = Time.now.strftime('backup_%Y-%m-%d-T%H-%M-%S')
         current_path = File.join(settings.remote_path, 'current')
@@ -56,7 +41,10 @@ module IncrementalBackup
         execute_ssh "mkdir --verbose --parents #{schedule_path}"
 
         # Rsync
-        execute "rsync #{rsync_options} -e ssh --link-dest=#{current_path} #{settings.local_path} #{rsync_path}"
+        Rsync.execute(logger, settings.local_path, rsync_path, {
+          exclude_file: settings.exclude_file,
+          link_dest: current_path
+        })
 
         ctime = 1
         execute_ssh [
@@ -71,7 +59,6 @@ module IncrementalBackup
 
         logger.info 'Backup done'
       end
-
 
     rescue Exception => exception
       logger.error exception.message
@@ -93,16 +80,6 @@ module IncrementalBackup
         throw "Invalid settings. Check the log file"
       end
       logger.info "Settings validated"
-    end
-
-    # Runs a shell command
-    def execute(command)
-      Open3::popen3(command) { |stdin, stdout, stderr|
-        tmp_stdout = stdout.read.strip
-        tmp_stderr = stderr.read.strip
-        logger.info("#{command}\n#{tmp_stdout}") unless tmp_stdout.empty?
-        logger.error("#{command}\n#{tmp_stderr}") unless tmp_stderr.empty?
-      }
     end
 
     # Runs one ore more commands remotely via ssh
