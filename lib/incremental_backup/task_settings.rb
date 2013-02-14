@@ -4,10 +4,11 @@ module IncrementalBackup
     include ActiveAttr::Model
 
     # Max backups to keep
-    attribute :hourly_backup_days, default: 1
-    attribute :daily_backup_days, default: 7
-    attribute :weekly_backup_days, default: 30
-    attribute :montly_backup_days, default: 100
+    attribute :hourly_backups, default: 24
+    attribute :daily_backups, default: 7
+    attribute :weekly_backups, default: 5
+    attribute :montly_backups, default: 12
+    attribute :yearly_backups, default: 100
 
     # Unique task id, must be a valid file name
     attribute :task_id

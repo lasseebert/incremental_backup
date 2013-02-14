@@ -17,8 +17,10 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
 
   gem.add_development_dependency 'rspec', '~> 2.12'
+  gem.add_development_dependency 'rspec-mocks', '~> 2.12'
   gem.add_development_dependency 'guard-rspec', '~> 2.4'
   gem.add_development_dependency 'rb-inotify', '~> 0.8.8'
+  gem.add_development_dependency 'rake', '~> 10.0.3'
 
   gem.add_dependency 'active_attr', '~> 0.7'
   gem.add_dependency 'net-ssh', '~> 2.6'

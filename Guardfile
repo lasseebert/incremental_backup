@@ -5,6 +5,7 @@ guard 'rspec' do
 
   # Run all specs if anything changes
   watch(%r{^lib/(.+)\.rb$}) { 'spec' }
+  watch(%w[Gemfile.lock]) { 'spec' }
   watch('spec/spec_helper.rb')  { 'spec' }
 end
 

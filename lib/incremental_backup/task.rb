@@ -32,13 +32,12 @@ module IncrementalBackup
         timestamp = Time.now.strftime('backup_%Y-%m-%d-T%H-%M-%S')
         current_path = File.join(settings.remote_path, 'current')
         progress_path = File.join(settings.remote_path, 'incomplete')
-        schedule_path = File.join(settings.remote_path, schedule.to_s)
-        complete_path = File.join(schedule_path, timestamp)
+        complete_path = File.join(schedule_path(schedule), timestamp)
         login = "#{settings.remote_user}@#{settings.remote_server}"
         rsync_path = "#{login}:#{progress_path}"
 
         # Make schedule folder
-        execute_ssh "mkdir --verbose --parents #{schedule_path}"
+        execute_ssh "mkdir --verbose --parents #{schedule_path schedule}"
 
         # Rsync
         Rsync.execute(logger, settings.local_path, rsync_path, {
@@ -46,16 +45,15 @@ module IncrementalBackup
           link_dest: current_path
         })
 
-        ctime = 1
+        # shuffle backups around
+        logger.info "Do the backup shuffle"
         execute_ssh [
-          # shuffle backups around
           "mv --verbose            #{progress_path} #{complete_path}",
           "rm --verbose --force    #{current_path}",
           "ln --verbose --symbolic #{complete_path} #{current_path}",
-
-          # Delete old backups
-          "find #{schedule_path} -maxdepth 1 -mindepth 1 -ctime #{ctime} -exec rm -fR {} \\;"
         ]
+
+        delete_old_backups schedule
 
         logger.info 'Backup done'
       end
@@ -71,6 +69,30 @@ module IncrementalBackup
 
     private
 
+    def schedule_path(schedule)
+      File.join(settings.remote_path, schedule.to_s)
+    end
+
+    def delete_old_backups(schedule)
+      backups = list_backup_dir schedule
+      backups_to_keep = settings.send("#{schedule}_backups")
+      backups.sort!
+      backups_to_delete = backups - backups.last(backups_to_keep)
+      if backups_to_delete.any?
+        if backups_to_delete.length == 1
+          logger.info "Deleting old backup #{backups_to_delete.first}"
+        else
+          logger.info "Deleting #{backups_to_delete.length} old backups"
+        end
+        execute_ssh(backups_to_delete.map { |path| "rm --force --recursive #{path}" })
+      end
+    end
+
+    def list_backup_dir(schedule)
+      logger.info "Listing backup dir #{schedule_path schedule}"
+      execute_ssh("find #{schedule_path schedule} -maxdepth 1 -mindepth 1").split("\n")
+    end
+
     def validate_settings
       unless settings.valid?
         logger.error "Invalid settings:"
@@ -85,18 +107,21 @@ module IncrementalBackup
     # Runs one ore more commands remotely via ssh
     def execute_ssh(commands)
       commands = [commands] unless commands.is_a? Array
+      result = ""
       Net::SSH.start settings.remote_server, settings.remote_user do |ssh|
         commands.each do |command|
           ssh.exec! command do |channel, stream, data|
             case stream
             when :stdout
               logger.info data
+              result += "#{data}\n" unless data.empty?
             when :stderr
               logger.error data
             end
           end
         end
       end
+      result
     end
 
     # Find out which schedule to run
