@@ -42,6 +42,19 @@ describe IncrementalBackup::Task do
     logger_double.stub(:info)
     task.stub(:logger).and_return logger_double
 
+    task.stub(:execute_ssh)
+    task.stub(:list_backup_dir).and_return([
+      "/hourly/backup_2013-02-14-T10-39-27",
+      "/hourly/backup_2013-02-14-T10-21-43",
+      "/hourly/backup_2013-02-14-T11-02-46",
+      "/hourly/backup_2013-02-14-T10-35-04",
+      "/hourly/backup_2013-02-14-T10-28-11",
+      "/hourly/backup_2013-02-14-T10-33-24"
+    ])
+
+    IncrementalBackup::Lock.stub(:create).and_yield
+    IncrementalBackup::Rsync.stub(:execute)
+
     task.run
 
     throw logger_errors.join("\n") if logger_errors.any?
