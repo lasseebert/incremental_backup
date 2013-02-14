@@ -7,7 +7,7 @@ module IncrementalBackup
     attribute :hourly_backups, default: 24
     attribute :daily_backups, default: 7
     attribute :weekly_backups, default: 5
-    attribute :montly_backups, default: 12
+    attribute :monthly_backups, default: 12
     attribute :yearly_backups, default: 100
 
     # Unique task id, must be a valid file name

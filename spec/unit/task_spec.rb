@@ -6,12 +6,12 @@ describe IncrementalBackup::Task do
       config.hourly_backups = 1
       config.daily_backups = 2
       config.weekly_backups = 3
-      config.montly_backups = 4
+      config.monthly_backups = 4
     end
     task.settings.hourly_backups.should == 1
     task.settings.daily_backups.should == 2
     task.settings.weekly_backups.should == 3
-    task.settings.montly_backups.should == 4
+    task.settings.monthly_backups.should == 4
   end
 
   it 'throws error with invalid settings do' do

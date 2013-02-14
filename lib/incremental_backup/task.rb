@@ -26,6 +26,11 @@ module IncrementalBackup
 
         # Find the schedule to run
         schedule = find_schedule
+        unless schedule
+          logger.info "No backup needed - exiting"
+          return
+        end
+
         logger.info "Starting #{schedule} backup to #{settings.remote_server}"
 
         # Paths and other options
@@ -55,7 +60,7 @@ module IncrementalBackup
 
         delete_old_backups schedule
 
-        logger.info 'Backup done'
+        logger.info "#{schedule} backup done"
       end
 
     rescue Exception => exception
@@ -90,6 +95,7 @@ module IncrementalBackup
 
     def list_backup_dir(schedule)
       logger.info "Listing backup dir #{schedule_path schedule}"
+      execute_ssh("mkdir -p #{schedule_path schedule}")
       execute_ssh("find #{schedule_path schedule} -maxdepth 1 -mindepth 1").split("\n")
     end
 
@@ -126,7 +132,28 @@ module IncrementalBackup
 
     # Find out which schedule to run
     def find_schedule
-      :hourly
+      hours = {
+        hourly: 1,
+        daily: 24,
+        weekly: 7*24,
+        monthly: 30*24,
+        yearly: 365*24
+      }
+
+      now = DateTime.now
+      [:yearly, :monthly, :weekly, :daily, :hourly].each do |schedule|
+        list = list_backup_dir schedule
+        date = list.map { |path| parse_backup_dir_name path, now.offset }.max
+        return schedule if !date || (now - date) * 24 > hours[schedule]
+      end
+
+      nil
+    end
+
+    def parse_backup_dir_name(dir, offset)
+      if dir =~ /(\d{4})-(\d{2})-(\d{2})-T(\d{2})-(\d{2})-(\d{2})$/
+        DateTime.new($1.to_i, $2.to_i, $3.to_i, $4.to_i, $5.to_i, $6.to_i, offset)
+      end
     end
   end
 end
