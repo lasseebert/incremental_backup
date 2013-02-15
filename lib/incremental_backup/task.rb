@@ -117,6 +117,7 @@ module IncrementalBackup
       Net::SSH.start settings.remote_server, settings.remote_user do |ssh|
         commands.each do |command|
           was_error = false
+          logger.info "ssh: #{command}"
           ssh.exec! command do |channel, stream, data|
             case stream
             when :stdout
