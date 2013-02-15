@@ -27,6 +27,10 @@ module IncrementalBackup
     attribute :remote_server
     attribute :remote_user
 
+    # Throttle
+    attribute :max_upload_speed
+    attribute :max_download_speed
+
     # Validation
     validates :task_id, presence: true
     validates :settings_path, presence: true
@@ -34,6 +38,8 @@ module IncrementalBackup
     validates :local_path, presence: true
     validates :remote_path, presence: true
     validates :remote_user, presence: true
+
+    
 
   end
 end

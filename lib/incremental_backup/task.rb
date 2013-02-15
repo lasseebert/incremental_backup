@@ -47,7 +47,9 @@ module IncrementalBackup
         # Rsync
         Rsync.execute(logger, settings.local_path, rsync_path, {
           exclude_file: settings.exclude_file,
-          link_dest: current_path
+          link_dest: current_path,
+          max_upload_speed: settings.max_upload_speed,
+          max_download_speed: settings.max_download_speed
         })
 
         # shuffle backups around

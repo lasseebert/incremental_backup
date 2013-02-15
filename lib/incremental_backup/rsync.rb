@@ -18,7 +18,15 @@ module IncrementalBackup
 
       rsync_options = rsync_options.map{|key, value| "#{key}#{value ? "=#{value}" : ''}" }.join(' ')
 
-      execute_shell logger, "rsync #{rsync_options} -e ssh #{local_path} #{remote_path}"
+      rsync_command = "rsync #{rsync_options} -e ssh #{local_path} #{remote_path}"
+      if options[:max_download_speed] || options[:max_upload_speed]
+        trickle = "trickle"
+        trickle += " -d #{options[:max_download_speed]}" if options[:max_download_speed]
+        trickle += " -u #{options[:max_upload_speed]}" if options[:max_upload_speed]
+        rsync_command = "#{trickle} #{rsync_command}"
+      end
+
+      execute_shell logger, rsync_command
 
     end
 
