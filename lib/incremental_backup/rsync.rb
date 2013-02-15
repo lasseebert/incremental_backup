@@ -1,9 +1,8 @@
-require 'open3'
+require 'pty'
 
 module IncrementalBackup
   class Rsync
     def self.execute(logger, local_path, remote_path, options)
-
       # TODO: Only use long options
       rsync_options = {
         "-azprvP" => nil,
@@ -25,14 +24,17 @@ module IncrementalBackup
 
     private
 
-    # Runs a shell command
     def self.execute_shell(logger, command)
-      Open3::popen3(command) { |stdin, stdout, stderr|
-        tmp_stdout = stdout.read.strip
-        tmp_stderr = stderr.read.strip
-        logger.info("#{command}\n#{tmp_stdout}") unless tmp_stdout.empty?
-        logger.error("#{command}\n#{tmp_stderr}") unless tmp_stderr.empty?
-      }
+      begin
+        PTY.spawn(command) do |stdout, stdin, pid|
+          begin
+            stdout.each { |line| logger.info line.gsub(/\n/, '') }
+          rescue Errno::EIO
+          end
+        end
+      rescue PTY::ChildExited
+      end
     end
+
   end
 end

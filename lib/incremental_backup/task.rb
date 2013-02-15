@@ -94,7 +94,6 @@ module IncrementalBackup
     end
 
     def list_backup_dir(schedule)
-      logger.info "Listing backup dir #{schedule_path schedule}"
       execute_ssh("mkdir -p #{schedule_path schedule}")
       execute_ssh("find #{schedule_path schedule} -maxdepth 1 -mindepth 1").split("\n")
     end
