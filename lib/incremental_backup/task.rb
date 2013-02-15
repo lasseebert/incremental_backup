@@ -123,6 +123,7 @@ module IncrementalBackup
               result += "#{data}\n" unless data.empty?
             when :stderr
               logger.error data
+              throw data
             end
           end
         end
