@@ -116,6 +116,7 @@ module IncrementalBackup
       result = ""
       Net::SSH.start settings.remote_server, settings.remote_user do |ssh|
         commands.each do |command|
+          was_error = false
           ssh.exec! command do |channel, stream, data|
             case stream
             when :stdout
@@ -123,9 +124,10 @@ module IncrementalBackup
               result += "#{data}\n" unless data.empty?
             when :stderr
               logger.error data
-              throw data
+              was_error = true
             end
           end
+          throw "Exception during ssh, look in log file" if was_error
         end
       end
       result
