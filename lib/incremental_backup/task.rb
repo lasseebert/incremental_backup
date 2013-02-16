@@ -137,12 +137,14 @@ module IncrementalBackup
 
     # Find out which schedule to run
     def find_schedule
-      hours = {
-        hourly: 1,
-        daily: 24,
-        weekly: 7*24,
-        monthly: 30*24,
-        yearly: 365*24
+      minutes = {
+        # If a cron job is run hourly it can be off by a couple of seconds
+        # from the last run. Set hourly to 58 minutes
+        hourly: 58, 
+        daily: 24*60,
+        weekly: 7*24*60,
+        monthly: 30*24*60,
+        yearly: 365*24*60
       }
 
       now = DateTime.now
