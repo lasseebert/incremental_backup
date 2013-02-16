@@ -34,13 +34,27 @@ module IncrementalBackup
 
     def self.execute_shell(logger, command)
       begin
+        last_line = nil
         PTY.spawn(command) do |stdout, stdin, pid|
           begin
-            stdout.each { |line| logger.info line.gsub(/\n/, '') }
-          rescue Errno::EIO
+            stdout.each do |line| 
+              logger.info line.gsub(/\n/, '')
+              last_line = line
+            end
+          rescue Errno::EIO => e
+            # Can't tell the difference between process being killed
+            # or process ended because it was done
+            unless last_line =~ /total size is/
+              logger.error "Errno::EIO"
+              logger.error e
+              raise e
+            end
           end
         end
-      rescue PTY::ChildExited
+      rescue PTY::ChildExited => e
+        logger.error "PTY::ChildExited"
+        logger.error e
+        raise e
       end
     end
 
