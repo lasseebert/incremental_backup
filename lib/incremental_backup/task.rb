@@ -151,7 +151,7 @@ module IncrementalBackup
       [:yearly, :monthly, :weekly, :daily, :hourly].each do |schedule|
         list = list_backup_dir schedule
         date = list.map { |path| parse_backup_dir_name path, now.offset }.max
-        return schedule if !date || (now - date) * 24 >= hours[schedule]
+        return schedule if !date || (now - date) * 24 * 60 >= minutes[schedule]
       end
 
       nil
