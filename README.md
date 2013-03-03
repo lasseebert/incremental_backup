@@ -13,6 +13,7 @@ The backup is by default performed every hour of a determined set of files and f
 * Ruby (tested on 1.9.3)
 * ssh
 * rsync
+* trickle (only needed if using throttling)
 
 ## Installation
 

@@ -29,7 +29,7 @@ task = IncrementalBackup::Task.new do |settings|
   settings.local_path = '/home/username/'
 
   # Remote path
-  settings.remote_path = '/home/remote username/backup/laptop'
+  settings.remote_path = '/home/remote username/backup'
 
   # Exclude all the files and folder listed in this file
   settings.exclude_file = '/home/username/.backup_task/exclude.file'
