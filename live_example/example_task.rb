@@ -22,14 +22,14 @@ task = IncrementalBackup::Task.new do |settings|
   settings.settings_path = File.dirname(__FILE__)
 
   # Login options
-  settings.remote_server = 'raspi'
-  settings.remote_user = 'pulver'
+  settings.remote_server = 'hostname or ip'
+  settings.remote_user = 'username on server'
 
   # Paths
   settings.local_path = '~'
-  settings.remote_path = '~/backup/incremental'
+  settings.remote_path = '~/backup'
 
-  # Exclude all the files and folder listed in this file
+  # Exclude all the files and folder listed in this file. This file is in default rsync syntax
   settings.exclude_file = File.join File.dirname(__FILE__), 'exclude.file'
 end
 

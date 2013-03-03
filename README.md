@@ -1,14 +1,12 @@
 # incremental\_backup
 
-**Please note: This is the README as is should be. The application is not yet implemented**
-
 Creates incremental backups via ssh and rsync.
 
 ## Description
 
 incremental\_backup is a tool to easily create incremental backups to a local directory or to a remote server using ssh and rsync.
 
-The backup is by default performed every hour of a determined set of files and folders. The backup is easily restorable from every hour in the last day, every day in the last week, every week in the last month and every month in the past three months. These default settings can be changed to suit your needs.
+The backup is by default performed every hour of a determined set of files and folders. The backup is easily restorable from every hour in the last day, every day in the last week, every week in the last month, every month in the past three months and every year forever. These default settings can be changed to suit your needs.
 
 ## Dependencies
 
@@ -24,37 +22,10 @@ The backup is by default performed every hour of a determined set of files and f
 
 The recommended usage is to create a small ruby application with a gemfile. Take a look at [the example](https://github.com/lasseebert/incremental_backup/tree/master/live_example).
 
-`Gemfile` should look like this:
-```ruby
-source 'https://rubygems.org'
-
-gem 'incremental_backup', '~> 0.0'
-```
-
-And `my_backup.rb` should look something like this: (Early version, this might change)
-```ruby
-#!/usr/bin/env ruby
-
-require 'incremental_backup'
-
-task = IncrementalBackup::Task.new do |settings|
-  settings.hourly_backups = 24
-  settings.daily_backups = 7
-  settings.weekly_backups = 4
-  settings.monthly_backups = 3
-  settings.settings_path = File.dirname(__FILE__)
-end
-
-task.run
-```
-
 ## Cron
 It's recommended to setup a cron job to handle scheduling of the backup.
 
 The cron job can be triggered as often as you would like to, the script still only at most perform one backup per hour. This is useful if your computer is usually not online for more than an hour.
-
-## Details an gotchas
-Todo
 
 ## Contributing
 
