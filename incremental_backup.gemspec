@@ -8,8 +8,8 @@ Gem::Specification.new do |gem|
   gem.version       = IncrementalBackup::VERSION
   gem.authors       = ["Lasse Skindstad Ebert"]
   gem.email         = ["lasseebert@gmail.com"]
-  gem.description   = %q{(NOT YET WORKING...) incremental_backup can make incremental backups by hour/day/week/month remotely through ssh and rsync}
-  gem.summary       = %q{(NOT YET WORKING...) incremental_backup can make incremental backups by hour/day/week/month remotely through ssh and rsync}
+  gem.description   = %q{incremental_backup can make incremental backups by hour/day/week/month/year remotely through ssh and rsync}
+  gem.summary       = %q{incremental_backup can make incremental backups by hour/day/week/month/year remotely through ssh and rsync}
   gem.homepage      = 'https://github.com/lasseebert/incremental_backup'
 
   gem.files         = `git ls-files`.split($/)
