@@ -19,18 +19,23 @@ task = IncrementalBackup::Task.new do |settings|
   # This is where all helper files are saved. These include a log file, a lock
   # file and a file remembering the dates of the the last backups. This would
   # typically be a hidden directory in the home folder, e.g. ~/.incremental_backup
-  settings.settings_path = File.dirname(__FILE__)
+  settings.settings_path = '/home/username/.backup_task'
 
   # Login options
   settings.remote_server = 'hostname or ip'
-  settings.remote_user = 'username on server'
+  settings.remote_user = 'remote username'
 
-  # Paths
-  settings.local_path = '~'
-  settings.remote_path = '~/backup'
+  # Local path - Trailing slash matters!
+  settings.local_path = '/home/username/'
 
-  # Exclude all the files and folder listed in this file. This file is in default rsync syntax
-  settings.exclude_file = File.join File.dirname(__FILE__), 'exclude.file'
+  # Remote path
+  settings.remote_path = '/home/remote username/backup/laptop'
+
+  # Exclude all the files and folder listed in this file
+  settings.exclude_file = '/home/username/.backup_task/exclude.file'
+
+  # In kB/s - this feature requires trickle
+  settings.max_upload_speed = 20
 end
 
 task.run
