@@ -28,6 +28,10 @@ It's recommended to setup a cron job to handle scheduling of the backup.
 
 The cron job can be triggered as often as you would like to, the script still only at most perform one backup per hour. This is useful if your computer is usually not online for more than an hour.
 
+## Alternatives
+
+* [meskyanichi/backup](https://github.com/meskyanichi/backup) - An all-in-one solution for backups of files and databases. Pretty awesome!
+
 ## Contributing
 
 1. Fork it
