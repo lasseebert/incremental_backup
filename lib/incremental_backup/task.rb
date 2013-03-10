@@ -82,9 +82,8 @@ module IncrementalBackup
 
     def delete_old_backups(schedule)
       backups = list_backup_dir schedule
-      backups_to_keep = settings.send("#{schedule}_backups")
       backups.sort!
-      backups_to_delete = backups - backups.last(backups_to_keep)
+      backups_to_delete = backups - backups.last(backups_to_keep(schedule))
       if backups_to_delete.any?
         if backups_to_delete.length == 1
           logger.info "Deleting old backup #{backups_to_delete.first}"
@@ -93,6 +92,10 @@ module IncrementalBackup
         end
         execute_ssh(backups_to_delete.map { |path| "rm --force --recursive #{path}" })
       end
+    end
+
+    def backups_to_keep(schedule)
+      settings.send("#{schedule}_backups")
     end
 
     def list_backup_dir(schedule)
@@ -149,6 +152,7 @@ module IncrementalBackup
 
       now = DateTime.now
       [:yearly, :monthly, :weekly, :daily, :hourly].each do |schedule|
+        next if backups_to_keep(schedule) <= 0
         list = list_backup_dir schedule
         date = list.map { |path| parse_backup_dir_name path, now.offset }.max
         return schedule if !date || (now - date) * 24 * 60 >= minutes[schedule]
