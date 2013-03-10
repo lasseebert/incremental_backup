@@ -16,10 +16,10 @@ task = IncrementalBackup::Task.new do |settings|
   settings.monthly_backups = 12
   settings.yearly_backups = 100
 
-  # This is where all helper files are saved. These include a log file, a lock
-  # file and a file remembering the dates of the the last backups. This would
-  # typically be a hidden directory in the home folder, e.g. ~/.incremental_backup
-  settings.settings_path = '/home/username/.backup_task'
+  # This is where all helper files are saved. These include a log file and a
+  # lock file This would typically be a hidden directory in the home folder, 
+  # e.g. ~/.incremental_backup
+  settings.settings_path = '/home/username/.incremental_backup'
 
   # Login options
   settings.remote_server = 'hostname or ip'
