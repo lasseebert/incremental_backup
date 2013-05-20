@@ -11,7 +11,7 @@ module IncrementalBackup
     def initialize task
       @task = task
 
-      unless File.open(path, File::RDWRi | File::CREAT, 0644).flock(File::LOCK_EX | File::LOCK_NB)
+      unless File.open(path, File::RDWR | File::CREAT, 0644).flock(File::LOCK_EX | File::LOCK_NB)
         self.failed = true
       end
     end
