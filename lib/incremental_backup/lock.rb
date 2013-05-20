@@ -11,7 +11,8 @@ module IncrementalBackup
     def initialize task
       @task = task
 
-      unless File.open(path, File::RDWR|File::CREAT, 0644).flock(File::LOCK_EX|File::LOCK_NB)
+      @lock_file = File.open(path, File::RDWR|File::CREAT, 0644)
+      unless lock_file.flock(File::LOCK_EX|File::LOCK_NB)
         self.failed = true
       end
     end
@@ -42,7 +43,7 @@ module IncrementalBackup
 
     # Release lock
     def release
-      FileUtils.rm path
+      lock_file.close if lock_file
     end
 
     private
