@@ -11,10 +11,8 @@ module IncrementalBackup
     def initialize task
       @task = task
 
-      if File.exists? path
+      unless File.open(path, File::RDWRi | File::CREAT, 0644).flock(File::LOCK_EX | File::LOCK_NB)
         self.failed = true
-      else
-        FileUtils.touch path
       end
     end
 
