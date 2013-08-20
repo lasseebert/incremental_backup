@@ -33,6 +33,7 @@ module IncrementalBackup
     private
 
     def self.execute_shell(logger, command)
+      logger.info command
       begin
         last_line = nil
         PTY.spawn(command) do |stdout, stdin, pid|
