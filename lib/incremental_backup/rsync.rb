@@ -38,8 +38,9 @@ module IncrementalBackup
         last_line = nil
         PTY.spawn(command) do |stdout, stdin, pid|
           begin
-            stdout.each do |line| 
-              logger.info line.gsub(/\n/, '')
+            stdout.each do |line|
+              log_line = line.gsub(/\n/, '') rescue line
+              logger.info log_line
               last_line = line
             end
           rescue Errno::EIO => e
