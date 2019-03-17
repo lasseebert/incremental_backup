@@ -1,5 +1,7 @@
 # incremental\_backup
 
+**NOTE**: This repo is no longer maintained
+
 Creates incremental backups via ssh and rsync.
 
 ## Description
